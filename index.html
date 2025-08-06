@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mi Catálogo WhatsApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --primary:#25d366; --bg:#f7f7f7; --card:#fff; --text:#222; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--card);padding:15px 20px;box-shadow:0 2px 6px rgba(0,0,0,.05);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    header h1{font-size:20px}
+    .search input{width:100%;max-width:300px;padding:8px 12px;border:1px solid #ddd;border-radius:50px;font-size:14px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;padding:20px}
+    .card{background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .card img{width:100%;height:150px;object-fit:cover}
+    .info{padding:10px}
+    .info h3{font-size:14px;margin-bottom:4px}
+    .price{font-weight:600;color:var(--primary);margin-bottom:8px}
+    .btn{background:var(--primary);color:#fff;border:none;width:100%;padding:8px 0;border-radius:4px;cursor:pointer;font-size:13px}
+    .fab{position:fixed;bottom:20px;right:20px;background:var(--primary);color:#fff;border:none;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 10px rgba(37,211,102,.4);z-index:100}
+    @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛍️ Mi Tienda</h1>
+  <div class="search">
+    <input id="searchBox" type="text" placeholder="Buscar producto…" onkeyup="filter()" />
+  </div>
+</header>
+
+<main class="grid" id="catalog"></main>
+
+<button class="fab" onclick="openWhatsApp()">
+  <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 2.05.62 3.95 1.67 5.53L2 22l4.47-1.67A9.96 9.96 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm4.64 6.56c-.17.45-.9 1.06-1.24 1.13-.36.07-.63.1-1.38-.34s-1.59-.66-1.95-1.32c-.36-.66-.38-1.22-.4-1.72s.17-1.03.4-1.24c.23-.21.51-.27.68-.27h.17c.17 0 .36-.02.55.43.2.45.68 1.63.72 1.75.04.12.08.26-.03.43-.11.17-.23.2-.43.3-.2.1-.83.41-.99.51-.15.1-.31.05-.51-.08-.2-.13-.83-.51-1.58-1.62-.59-.89-.99-1.99-.99-2.11 0-.12.03-.2.08-.27.05-.07.11-.12.23-.18.11-.05.2-.08.32-.08h.17c.12 0 .32-.03.49.39.17.41.59 1.45.72 1.75.13.3.26.45.39.45.13 0 .33-.15.65-.47.32-.32.91-.95.91-.95s.2-.23.52-.23c.32 0 .65.23.65.23z"/></svg>
+</button>
+
+<script>
+  const products = [
+    { id:1, name:"iPhone 14", price:"$1.200.000", img:"img/iphone.jpg" },
+    { id:2, name:"AirPods Pro", price:"$350.000", img:"img/airpods.jpg" },
+    { id:3, name:"Funda MagSafe", price:"$80.000", img:"img/funda.jpg" },
+    { id:4, name:"Cargador 20W", price:"$45.000", img:"img/cargador.jpg" },
+    { id:5, name:"Apple Watch", price:"$550.000", img:"img/watch.jpg" },
+    { id:6, name:"Cable USB-C", price:"$25.000", img:"img/cable.jpg" }
+  ];
+  const catalog = document.getElementById('catalog');
+  function render(list){catalog.innerHTML='';list.forEach(p=>catalog.insertAdjacentHTML('beforeend',`
+    <div class="card">
+      <img src="${p.img}" alt="${p.name}">
+      <div class="info">
+        <h3>${p.name}</h3>
+        <div class="price">${p.price}</div>
+        <button class="btn" onclick="ask(${p.id})">Consultar</button>
+      </div>
+    </div>`));}
+  render(products);
+  function filter(){
+    const q=document.getElementById('searchBox').value.toLowerCase();
+    render(products.filter(p=>p.name.toLowerCase().includes(q)));
+  }
+  const phone='549123456789'; // Cambia por tu número
+  function ask(id){
+    const p=products.find(x=>x.id===id);
+    const text=encodeURIComponent(`Hola, estoy interesado en ${p.name} - ${p.price}`);
+    window.open(`https://wa.me/${phone}?text=${text}`,'_blank');
+  }
+  function openWhatsApp(){
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent('Hola, quiero consultar por un producto')}`,'_blank');
+  }
+</script>
+</body>
+</html>
